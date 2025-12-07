@@ -1,68 +1,218 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Starfield animation */
+.stars,
+.stars2,
+.stars3 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  box-shadow: 1779px 1131px #FFF, 1506px 1645px #FFF, 1316px 990px #FFF, 1785px 1806px #FFF,
+              1661px 1750px #FFF, 1505px 1248px #FFF, 1754px 1668px #FFF, 1505px 1501px #FFF;
+  animation: animStar 50s linear infinite;
 }
 
+.stars::after,
+.stars2::after,
+.stars3::after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+}
+
+.stars::after {
+  box-shadow: 1779px 1131px #FFF, 1506px 1645px #FFF, 1316px 990px #FFF, 1785px 1806px #FFF,
+              1661px 1750px #FFF, 1505px 1248px #FFF, 1754px 1668px #FFF, 1505px 1501px #FFF;
+}
+
+.stars2 {
+  width: 2px;
+  height: 2px;
+  box-shadow: 878px 1520px #FFF, 1023px 390px #FFF, 1759px 1053px #FFF, 886px 1726px #FFF,
+              1277px 1652px #FFF, 1115px 1531px #FFF, 1705px 1842px #FFF, 1005px 548px #FFF;
+  animation: animStar 100s linear infinite;
+}
+
+.stars2::after {
+  width: 2px;
+  height: 2px;
+  box-shadow: 878px 1520px #FFF, 1023px 390px #FFF, 1759px 1053px #FFF, 886px 1726px #FFF,
+              1277px 1652px #FFF, 1115px 1531px #FFF, 1705px 1842px #FFF, 1005px 548px #FFF;
+}
+
+.stars3 {
+  width: 3px;
+  height: 3px;
+  box-shadow: 466px 1780px #FFF, 1162px 1716px #FFF, 1176px 265px #FFF, 599px 1772px #FFF,
+              956px 587px #FFF, 1693px 1529px #FFF, 1250px 1367px #FFF, 1580px 1729px #FFF;
+  animation: animStar 150s linear infinite;
+}
+
+.stars3::after {
+  width: 3px;
+  height: 3px;
+  box-shadow: 466px 1780px #FFF, 1162px 1716px #FFF, 1176px 265px #FFF, 599px 1772px #FFF,
+              956px 587px #FFF, 1693px 1529px #FFF, 1250px 1367px #FFF, 1580px 1729px #FFF;
+}
+
+@keyframes animStar {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-2000px);
+  }
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Gradient animation */
+@keyframes gradient-x {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+
+/* Spin animations */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 15s linear infinite;
+}
+
+/* Scale in animation */
+@keyframes scale-in {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(139, 92, 246, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #a855f7, #ec4899);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #9333ea, #db2777);
+}
+
+/* Remove default focus outline and add custom one */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(168, 85, 247, 0.5);
+  outline-offset: 2px;
+}
+
+/* Smooth transitions for all interactive elements */
+button,
+input,
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  transition: all 0.3s ease;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+/* Music bar animations */
+@keyframes music-bar-1 {
+  0%, 100% { height: 16px; }
+  50% { height: 24px; }
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+@keyframes music-bar-2 {
+  0%, 100% { height: 24px; }
+  50% { height: 12px; }
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+@keyframes music-bar-3 {
+  0%, 100% { height: 20px; }
+  50% { height: 28px; }
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+@keyframes music-bar-4 {
+  0%, 100% { height: 18px; }
+  50% { height: 14px; }
+}
+
+.animate-music-bar-1 {
+  animation: music-bar-1 0.6s ease-in-out infinite;
+}
+
+.animate-music-bar-2 {
+  animation: music-bar-2 0.7s ease-in-out infinite;
+  animation-delay: 0.1s;
+}
+
+.animate-music-bar-3 {
+  animation: music-bar-3 0.8s ease-in-out infinite;
+  animation-delay: 0.2s;
+}
+
+.animate-music-bar-4 {
+  animation: music-bar-4 0.65s ease-in-out infinite;
+  animation-delay: 0.15s;
 }
