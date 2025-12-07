@@ -1,6 +1,6 @@
 import express from 'express';
 import { z } from 'zod';
-import { generateStory } from '../services/openai';
+import { generateStory } from '../services/gemini';
 import { StoryConfig } from '../types';
 
 const router = express.Router();
@@ -58,7 +58,7 @@ router.get('/health', (req, res) => {
     res.json({
         status: 'ok',
         service: 'story-generation',
-        openaiConfigured: !!process.env.OPENAI_API_KEY
+        geminiConfigured: !!process.env.GEMINI_API_KEY
     });
 });
 
