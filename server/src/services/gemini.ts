@@ -68,26 +68,27 @@ Now write the complete story:`;
             throw new Error('Failed to parse story response');
         }
 
-        // Convert to our StoryPage format and generate images
-        const pages: StoryPage[] = await Promise.all(
-            storyPages.map(async (page, index) => {
-                let imageUrl: string | undefined;
+        // Generate ONE image for the first page only to respect rate limits
+        let coverImageUrl: string | undefined;
+        try {
+            console.log('Generating cover image...');
+            coverImageUrl = await generateImage(
+                `${characterName}, the ${characterTraits} hero, in a ${theme} adventure. Children's book cover illustration.`,
+                characterName,
+                theme
+            );
+            console.log('Cover image generated successfully!');
+        } catch (error) {
+            console.error('Failed to generate cover image:', error);
+            // Continue without image
+        }
 
-                try {
-                    // Generate image for this page
-                    imageUrl = await generateImage(page.imagePrompt, characterName, theme);
-                } catch (error) {
-                    console.error(`Failed to generate image for page ${index + 1}:`, error);
-                    // Continue without image
-                }
-
-                return {
-                    text: page.text,
-                    imageUrl,
-                    audioUrl: undefined // We can add TTS later if needed
-                };
-            })
-        );
+        // Convert to our StoryPage format - only first page gets the image
+        const pages: StoryPage[] = storyPages.map((page, index) => ({
+            text: page.text,
+            imageUrl: index === 0 ? coverImageUrl : undefined, // Only first page gets the image
+            audioUrl: undefined
+        }));
 
         return pages;
     } catch (error) {
