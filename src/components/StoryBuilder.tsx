@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { generateStory, type StoryPage } from "../services/api";
 
 interface StoryConfig {
     ageRange: string;
@@ -8,19 +9,13 @@ interface StoryConfig {
     storyLength: string;
 }
 
-interface StoryPage {
-    text: string;
-    imageUrl?: string;
-    audioUrl?: string;
-}
-
 interface StoryBuilderProps {
     onStoryGenerated: (story: StoryPage[]) => void;
     onBack: () => void;
 }
 
 export default function StoryBuilder({ onStoryGenerated, onBack }: StoryBuilderProps) {
-    const [step, setStep] = useState<"config" | "generating">("config");
+    const [step, setStep] = useState<"config" | "generating" | "error">("config");
     const [config, setConfig] = useState<StoryConfig>({
         ageRange: "",
         theme: "",
@@ -28,6 +23,7 @@ export default function StoryBuilder({ onStoryGenerated, onBack }: StoryBuilderP
         characterTraits: "",
         storyLength: "short",
     });
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
     const ageRanges = [
         { value: "3-5", label: "3-5 Years", icon: "🧒", description: "Simple words & short stories", gradient: "from-pink-400 via-rose-400 to-pink-500" },
@@ -50,47 +46,59 @@ export default function StoryBuilder({ onStoryGenerated, onBack }: StoryBuilderP
         { value: "long", label: "Adventure Tale", icon: "🏰", pages: "11-15 pages", gradient: "from-rose-400 via-pink-500 to-fuchsia-500", description: "Epic journey" }
     ];
 
-    const handleGenerateStory = () => {
+    const handleGenerateStory = async () => {
         setStep("generating");
+        setErrorMessage("");
 
-        // Simulate story generation - replace with actual API call later
-        setTimeout(() => {
-            const mockStory: StoryPage[] = [
-                {
-                    text: `Once upon a time, in a land where magic sparkled in the air, there lived a ${
-                        config.characterTraits || "brave"
-                    } child named ${config.characterName || "Alex"}.`,
-                    imageUrl: undefined,
-                    audioUrl: undefined,
-                },
-                {
-                    text: `${
-                        config.characterName || "Alex"
-                    } loved to explore the enchanted forests and discover new wonders every single day.`,
-                    imageUrl: undefined,
-                    audioUrl: undefined,
-                },
-                {
-                    text: `One magical morning, ${config.characterName || "Alex"} found a mysterious glowing portal hidden behind the ancient oak tree.`,
-                    imageUrl: undefined,
-                    audioUrl: undefined,
-                },
-                {
-                    text: `Taking a deep breath, our hero stepped through the portal and emerged in a world filled with floating islands and rainbow waterfalls.`,
-                    imageUrl: undefined,
-                    audioUrl: undefined,
-                },
-                {
-                    text: `"Welcome, young adventurer!" said a friendly dragon with scales that shimmered like diamonds. "We've been waiting for someone just like you!"`,
-                    imageUrl: undefined,
-                    audioUrl: undefined,
-                },
-            ];
-            onStoryGenerated(mockStory);
-        }, 3000);
+        try {
+            const story = await generateStory(config);
+            onStoryGenerated(story);
+        } catch (error: any) {
+            console.error("Failed to generate story:", error);
+            setErrorMessage(error.message || "Failed to generate story. Please try again.");
+            setStep("error");
+        }
     };
 
     const isConfigComplete = config.ageRange && config.theme && config.characterName;
+
+    if (step === "error") {
+        return (
+            <div className="min-h-screen bg-linear-to-br from-slate-950 via-purple-950 to-slate-950 relative overflow-hidden flex items-center justify-center px-4">
+                <div className="absolute inset-0">
+                    <div className="stars"></div>
+                    <div className="stars2"></div>
+                    <div className="stars3"></div>
+                </div>
+
+                <div className="relative z-10 max-w-2xl mx-auto text-center">
+                    <div className="backdrop-blur-2xl bg-white/5 border border-red-500/30 rounded-3xl p-12 shadow-2xl">
+                        <div className="text-6xl mb-6">😔</div>
+                        <h2 className="text-4xl md:text-5xl font-bold text-red-400 mb-6">
+                            Oops! Something went wrong
+                        </h2>
+                        <p className="text-purple-200 text-lg mb-8">
+                            {errorMessage}
+                        </p>
+                        <div className="flex gap-4 justify-center">
+                            <button
+                                onClick={() => setStep("config")}
+                                className="px-8 py-4 bg-linear-to-r from-purple-600 to-pink-600 text-white font-bold text-lg rounded-full hover:scale-105 transition-all shadow-lg"
+                            >
+                                Try Again
+                            </button>
+                            <button
+                                onClick={onBack}
+                                className="px-8 py-4 bg-white/10 border border-purple-500/30 text-purple-200 font-bold text-lg rounded-full hover:bg-white/20 transition-all"
+                            >
+                                Go Back
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (step === "generating") {
         return (
